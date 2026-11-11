@@ -60,7 +60,7 @@ def make_features(df):                              # same feature recipe as Ste
 
 model = load_model()                                # load the trained model
 
-if st.button("Predict"):                            # runs when the button is clicked
+if st.button("Predict", type="primary"):                           # runs when the button is clicked
     df, offset = get_recent_weather(lat, lon)       # download recent hours
     now_local = pd.Timestamp.now(tz="UTC").tz_localize(None) + pd.Timedelta(seconds=offset)  # current time at the chosen place
     df = df.loc[:now_local.floor("h")]              # keep only hours up to now (no future data)
