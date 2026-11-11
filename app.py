@@ -82,8 +82,63 @@ h1 {                                              /* the big title */
 }
 
 footer {visibility: hidden;}                      /* hides the small "Made with Streamlit" text */
+.cloud {                                          /* shared look for all clouds */
+    position: fixed;                              /* stays in place when you scroll */
+    z-index: -1;                                  /* sits behind your text but in front of the rain */
+    pointer-events: none;                         /* lets your mouse click through */
+    background:
+        radial-gradient(ellipse at 30% 60%, rgba(120,135,160,0.55) 0 35%, transparent 70%),   /* puff 1 */
+        radial-gradient(ellipse at 60% 40%, rgba(140,155,180,0.50) 0 35%, transparent 70%),   /* puff 2 */
+        radial-gradient(ellipse at 80% 65%, rgba(110,125,150,0.50) 0 30%, transparent 70%);   /* puff 3 */
+    filter: blur(14px);                           /* softens the edges so it looks like cloud */
+}
+
+.c1 { top: 30px;  left: -40vw; width: 40vw; height: 150px; animation: drift 50s linear infinite; }                  /* cloud 1: high, 50 seconds to cross the screen */
+.c2 { top: 120px; left: -50vw; width: 50vw; height: 170px; animation: drift 75s linear infinite; animation-delay: -35s; opacity: 0.7; }  /* cloud 2: lower, slower, fainter, and starts already on screen */
+
+@keyframes drift {                                /* the movement of the clouds */
+    from { transform: translateX(0); }            /* start at the left edge */
+    to   { transform: translateX(170vw); }        /* move right until it leaves the screen, then repeat */
+}
+
+.lightning {                                      /* a flash that lights the whole sky */
+    position: fixed;                              /* covers the screen */
+    top: 0; left: 0; width: 100vw; height: 100vh; /* full screen size */
+    z-index: -1;                                  /* behind your text */
+    pointer-events: none;                         /* lets your mouse click through */
+    background: radial-gradient(ellipse at 70% 0%, rgba(200,220,255,0.55), transparent 65%);  /* bright blue-white glow from the top right */
+    opacity: 0;                                   /* invisible most of the time */
+    animation: flash 9s infinite;                 /* repeats every 9 seconds */
+}
+
+.bolt {                                           /* the lightning bolt shape */
+    position: fixed;                              /* stays in place */
+    top: 0; right: 22vw;                          /* near the top right */
+    width: 70px; height: 38vh;                    /* size of the bolt */
+    z-index: -1;                                  /* behind your text */
+    pointer-events: none;                         /* lets your mouse click through */
+    background: #EAF2FF;                          /* bright white-blue */
+    clip-path: polygon(55% 0, 15% 48%, 45% 48%, 25% 100%, 85% 40%, 52% 40%, 80% 0);  /* cuts the box into a zigzag bolt */
+    filter: drop-shadow(0 0 12px #8FB8FF);        /* blue glow around the bolt */
+    opacity: 0;                                   /* invisible most of the time */
+    animation: flash 9s infinite;                 /* flashes together with the sky */
+}
+
+@keyframes flash {                                /* the timing of one lightning strike */
+    0%, 86%  { opacity: 0; }                      /* from 0% to 86% of the 9 seconds: nothing */
+    87%      { opacity: 0.9; }                    /* sudden bright flash */
+    89%      { opacity: 0.1; }                    /* quick fade */
+    91%      { opacity: 0.7; }                    /* second smaller flash, like real lightning */
+    95%, 100%{ opacity: 0; }                      /* back to dark until the next strike */
+}
 </style>
 """, unsafe_allow_html=True)                      # puts this style into the page; without unsafe_allow_html the CSS would show as plain text
+st.markdown("""
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="lightning"></div>
+<div class="bolt"></div>
+""", unsafe_allow_html=True)
 st.title("Rain predictor")                         # big title on the page
 st.write("Chance of rain in the next 3 hours at any location.")  # short description
 
