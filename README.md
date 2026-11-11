@@ -2,7 +2,7 @@
 
 A machine learning project that predicts the chance of rain in the next 3 hours at any location, using pressure, humidity and temperature data.
 
-**Live app:** YOUR-STREAMLIT-LINK
+**Live app:** https://rain-predictor-dnsigznead3xugv7ktp8bx.streamlit.app/#rain-predictor
 
 ## What it does
 - Takes a latitude and longitude.
