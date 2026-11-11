@@ -6,6 +6,84 @@ import lightgbm as lgb          # loads our trained model
 import altair as alt   # chart library that comes with streamlit
 
 st.set_page_config(page_title="Rain Predictor")   # sets the browser tab title
+st.markdown("""
+<style>
+.stApp {                                          /* the whole app background */
+    background: linear-gradient(180deg, #0B1320 0%, #1B2A49 55%, #0B1320 100%) !important;  /* dark stormy sky, navy to blue to navy */
+}
+
+.stApp::before, .stApp::after {                   /* two invisible layers that will hold the rain */
+    content: "";                                  /* needed so the layer exists */
+    position: fixed;                              /* stays in place when you scroll */
+    top: 0; left: 0; width: 100%; height: 100%;   /* covers the whole screen */
+    pointer-events: none;                         /* lets your mouse click through the rain */
+    z-index: 0;                                   /* sits behind your content */
+}
+
+.stApp::before {                                  /* rain layer 1: bigger drops */
+    background: repeating-linear-gradient(90deg, transparent 0 37px, rgba(174,194,224,0.55) 37px 39px);  /* thin vertical lines every 39 pixels */
+    -webkit-mask-image: linear-gradient(180deg, #000 0 40px, transparent 40px 130px);  /* cuts each line into short pieces, so they look like streaks */
+    mask-image: linear-gradient(180deg, #000 0 40px, transparent 40px 130px);          /* same thing for other browsers */
+    -webkit-mask-size: 100% 130px;                /* one pattern of 130 pixels high */
+    mask-size: 100% 130px;                        /* same thing for other browsers */
+    animation: rain1 0.8s linear infinite;        /* moves the streaks down forever */
+}
+
+.stApp::after {                                   /* rain layer 2: smaller and softer drops */
+    background: repeating-linear-gradient(90deg, transparent 0 52px, rgba(174,194,224,0.3) 52px 53px);  /* thinner lines, different spacing */
+    -webkit-mask-image: linear-gradient(180deg, #000 0 60px, transparent 60px 170px);
+    mask-image: linear-gradient(180deg, #000 0 60px, transparent 60px 170px);
+    -webkit-mask-size: 100% 170px;
+    mask-size: 100% 170px;
+    animation: rain2 1.2s linear infinite;        /* slower than layer 1, so it looks natural */
+}
+
+@keyframes rain1 {                                /* the movement of layer 1 */
+    from { -webkit-mask-position: 0 0; mask-position: 0 0; }          /* start position */
+    to   { -webkit-mask-position: 0 130px; mask-position: 0 130px; }  /* move down by one pattern, then repeat */
+}
+@keyframes rain2 {                                /* the movement of layer 2 */
+    from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+    to   { -webkit-mask-position: 0 170px; mask-position: 0 170px; }
+}
+
+.block-container {                                /* your app content area */
+    position: relative;                           /* needed for z-index to work */
+    z-index: 1;                                   /* puts the content in front of the rain */
+    max-width: 850px;                             /* keeps the page from getting too wide */
+}
+
+h1 {                                              /* the big title */
+    background: linear-gradient(90deg, #4FC3F7, #B388FF);   /* blue to purple colour */
+    -webkit-background-clip: text;                /* colour shows only inside the letters */
+    -webkit-text-fill-color: transparent;         /* makes the letters see-through so the colour shows */
+    font-weight: 800;                             /* extra bold */
+}
+
+[data-testid="stMetric"] {                        /* the box around the big percentage */
+    background: rgba(255,255,255,0.07);           /* faint glass colour */
+    border: 1px solid rgba(255,255,255,0.15);     /* thin light border */
+    border-radius: 18px;                          /* round corners */
+    padding: 18px 24px;                           /* space inside the box */
+    backdrop-filter: blur(8px);                   /* blurs the rain behind the box, like frosted glass */
+}
+
+[data-testid="stMetricValue"] {                   /* the big number */
+    font-size: 3.2rem;                            /* makes it large */
+}
+
+.stButton > button {                              /* the Predict button */
+    background: linear-gradient(90deg, #4FC3F7, #7C4DFF);   /* blue to purple */
+    color: white;                                 /* white text */
+    border: none;                                 /* no border */
+    border-radius: 12px;                          /* round corners */
+    padding: 0.6rem 2.2rem;                       /* bigger button */
+    font-weight: 600;                             /* semi-bold text */
+}
+
+footer {visibility: hidden;}                      /* hides the small "Made with Streamlit" text */
+</style>
+""", unsafe_allow_html=True)                      # puts this style into the page; without unsafe_allow_html the CSS would show as plain text
 st.title("Rain predictor")                         # big title on the page
 st.write("Chance of rain in the next 3 hours at any location.")  # short description
 
