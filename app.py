@@ -80,7 +80,7 @@ if st.button("Predict"):                            # runs when the button is cl
     x="time:T",                                           # time on the horizontal axis
     y=alt.Y("surface_pressure:Q", scale=alt.Scale(zero=False)),  # pressure on the vertical axis, zoomed to the real range (not starting from 0)
 )
-st.altair_chart(chart, use_container_width=True)          # show it, full width
+    st.altair_chart(chart, use_container_width=True)          # show it, full width
     st.subheader("Recent humidity (%)")
     st.line_chart(df["relative_humidity_2m"])       # humidity graph
 
