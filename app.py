@@ -3,6 +3,7 @@ import requests                 # asks websites for data
 import pandas as pd             # tables
 import numpy as np              # maths
 import lightgbm as lgb          # loads our trained model
+import altair as alt   # chart library that comes with streamlit
 
 st.set_page_config(page_title="Rain Predictor")   # sets the browser tab title
 st.title("Rain predictor")                         # big title on the page
@@ -75,7 +76,11 @@ if st.button("Predict"):                            # runs when the button is cl
 
     st.caption(f"Based on data up to {feats.index[-1]} (local time).")  # which hour was used
     st.subheader("Recent pressure (hPa)")
-    st.line_chart(df["surface_pressure"])           # pressure graph for the last 2 days
+    chart = alt.Chart(df.reset_index()).mark_line().encode(   # draw a line chart with the altair library
+    x="time:T",                                           # time on the horizontal axis
+    y=alt.Y("surface_pressure:Q", scale=alt.Scale(zero=False)),  # pressure on the vertical axis, zoomed to the real range (not starting from 0)
+)
+st.altair_chart(chart, use_container_width=True)          # show it, full width
     st.subheader("Recent humidity (%)")
     st.line_chart(df["relative_humidity_2m"])       # humidity graph
 
